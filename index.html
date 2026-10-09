@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ระบบนิเวศการเรียนรู้ในชั้นเรียน</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--plate:#2fa14a;--plate-d:#278a3e;--ink:#1b1b1b;--paper:#fff;--red:#e3000b;--yellow:#ffd500;--blue:#006db7;--green:#00a34a;--orange:#ff7a00;--note:#fffbe0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--plate:#1d6a32;--plate-d:#175a2a}}
+:root[data-theme="dark"]{--plate:#1d6a32;--plate-d:#175a2a}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--plate)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font-family:"Noto Sans Thai",system-ui,sans-serif;line-height:1.6;min-height:100vh;
+background-color:var(--plate);background-image:radial-gradient(circle at 50% 50%,var(--plate) 0 9px,var(--plate-d) 10px 12px,transparent 13px);background-size:44px 44px}
+main{max-width:980px;margin:0 auto;padding:36px 20px 56px}
+.hero{position:relative;background:var(--yellow);border:4px solid var(--ink);border-radius:14px;padding:22px 24px;margin:18px 0 34px;box-shadow:0 8px 0 var(--ink)}
+.hero::before,.studs::before{content:"";position:absolute;left:18px;right:18px;top:-17px;height:14px;background-image:radial-gradient(ellipse at 50% 60%,var(--b,var(--yellow)) 0 9px,var(--ink) 9.5px 12px,transparent 12.5px);background-size:44px 14px;background-repeat:repeat-x}
+h1{font-size:clamp(1.6rem,5vw,2.5rem);font-weight:800;margin:0 0 4px;line-height:1.25}
+.sub{margin:0;font-weight:600}
+.add{display:flex;gap:10px;margin-bottom:38px;flex-wrap:wrap;background:var(--paper);border:4px solid var(--ink);border-radius:14px;padding:14px;box-shadow:0 6px 0 var(--ink);position:relative}
+input{font:inherit;color:var(--ink);background:var(--paper);border:3px solid var(--ink);border-radius:10px;padding:9px 14px;min-width:0}
+input:focus,button:focus-visible,.handle:focus-visible{outline:4px solid var(--blue);outline-offset:2px}
+.add input{flex:1 1 200px}
+button{font:inherit;font-weight:700;cursor:pointer;border-radius:10px;border:3px solid var(--ink);background:var(--paper);color:var(--ink);padding:7px 16px;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+button:active{transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.primary{background:var(--red);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:36px 20px;list-style:none;padding:0;margin:0}
+.item{--b:var(--red);--fg:#fff;position:relative;background:var(--b);color:var(--fg);border:4px solid var(--ink);border-radius:12px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;min-height:140px;justify-content:space-between;box-shadow:0 8px 0 var(--ink)}
+.item::before{content:"";position:absolute;left:14px;right:14px;top:-17px;height:14px;background-image:radial-gradient(ellipse at 50% 60%,var(--b) 0 9px,var(--ink) 9.5px 12px,transparent 12.5px);background-size:44px 14px;background-repeat:repeat-x}
+.item:nth-child(5n+2){--b:var(--blue)}
+.item:nth-child(5n+3){--b:var(--yellow);--fg:var(--ink)}
+.item:nth-child(5n+4){--b:var(--green)}
+.item:nth-child(5n){--b:var(--orange);--fg:var(--ink)}
+.item.dragging{opacity:.6;transform:rotate(-2deg) scale(1.03);box-shadow:0 18px 0 rgba(0,0,0,.35)}
+.top{display:flex;gap:8px;align-items:flex-start}
+.handle{cursor:grab;touch-action:none;user-select:none;font-size:1.3rem;line-height:1.3;padding:0 6px;border-radius:6px;letter-spacing:-2px;background:rgba(0,0,0,.2)}
+.handle:active{cursor:grabbing}
+.word{font-size:1.15rem;font-weight:800;overflow-wrap:anywhere;margin:0;flex:1}
+.note{background:var(--note);color:var(--ink);border:3px solid var(--ink);border-radius:8px;padding:4px 10px;font-size:.92rem;margin:0;overflow-wrap:anywhere}
+.fields{display:flex;flex-direction:column;gap:8px}
+.item input{width:100%}
+.acts{display:flex;gap:10px;justify-content:flex-end}
+.acts button{padding:3px 12px;font-size:.9rem}
+.del{color:var(--red)}
+.empty{background:var(--paper);padding:24px;border:4px dashed var(--ink);border-radius:12px;text-align:center;font-weight:600}
+footer{margin-top:44px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-weight:700;flex-wrap:wrap;gap:8px}
+body.drag-active{user-select:none;cursor:grabbing}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<div class="hero"><h1>🧱 ระบบนิเวศการเรียนรู้ในชั้นเรียน</h1>
+<p class="sub">ลากที่ไอคอน ⋮⋮ เพื่อจัดเรียงคำ กด “แก้ไข” เพื่อแก้คำหรือเพิ่มโน้ตสั้นๆ</p></div>
+<div class="add studs" style="--b:var(--paper)">
+<input id="new" placeholder="พิมพ์คำที่ต้องการเพิ่ม" aria-label="คำใหม่">
+<input id="newNote" placeholder="โน้ตสั้นๆ (ไม่ใส่ก็ได้)" maxlength="120" aria-label="โน้ตสั้น">
+<button class="primary" id="addBtn">เพิ่มคำ</button>
+</div>
+<ul class="grid" id="list"></ul>
+<footer><span id="count"></span><button id="reset">คืนค่าเริ่มต้น</button></footer>
+</main>
+<script>
+const DEFAULT=["ระบบนิเวศการเรียนรู้ในชั้นเรียน","การติดตั้งระบบ","ห้องเรียนแห่งความสุขประสิทธิภาพสูง","Teacher as a Learning Designer (TLD)","Mentor of the Learning Designers (MLD)","TLD Teacher academy","วงจรขยายศักยภาพการจัดการเรียนรู้ (DIF)","ชุมชนขยายศักยภาพการจัดการเรียนรู้ (ICEC)"];
+let uid=0;const mk=(t,n="")=>({id:++uid,t,n});
+const fresh=()=>DEFAULT.map(t=>mk(t));
+let words=fresh(),editing=-1;
+try{
+ const s2=localStorage.getItem("learning-words-v2"),s1=localStorage.getItem("learning-words-v1");
+ if(s2){const a=JSON.parse(s2);if(Array.isArray(a))words=a.map(x=>mk(x.t,x.n||""))}
+ else if(s1){const a=JSON.parse(s1);if(Array.isArray(a))words=a.map(x=>mk(String(x)))}
+}catch(e){}
+function save(){try{localStorage.setItem("learning-words-v2",JSON.stringify(words.map(({t,n})=>({t,n}))))}catch(e){}}
+const list=document.getElementById("list"),inp=document.getElementById("new"),inpN=document.getElementById("newNote");
+const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function render(){
+ list.innerHTML=words.length?words.map((w,i)=>w.id===editing?
+ `<li class="item" data-id="${w.id}"><div class="fields"><input data-f="t" value="${esc(w.t)}" aria-label="แก้ไขคำ"><input data-f="n" value="${esc(w.n)}" maxlength="120" placeholder="โน้ตสั้นๆ" aria-label="โน้ต"></div><div class="acts"><button class="primary" data-save>บันทึก</button><button data-cancel>ยกเลิก</button></div></li>`:
+ `<li class="item" data-id="${w.id}"><div class="top"><span class="handle" tabindex="0" role="button" aria-label="ลากเพื่อจัดเรียง (หรือใช้ลูกศรขึ้นลง)" title="ลากเพื่อจัดเรียง">⋮⋮</span><p class="word">${esc(w.t)}</p></div>${w.n?`<p class="note">📝 ${esc(w.n)}</p>`:""}<div class="acts"><button data-edit>แก้ไข</button><button class="del" data-del>ลบ</button></div></li>`).join(""):
+ `<li class="empty" style="grid-column:1/-1">ยังไม่มีคำ พิมพ์คำแรกด้านบนแล้วกด “เพิ่มคำ”</li>`;
+ document.getElementById("count").textContent=`ทั้งหมด ${words.length} คำ`;
+ const e=list.querySelector('[data-f="t"]');if(e){e.focus();e.setSelectionRange(e.value.length,e.value.length)}
+}
+function add(){const v=inp.value.trim();if(!v)return;words.push(mk(v,inpN.value.trim()));inp.value="";inpN.value="";save();render();inp.focus()}
+const idx=el=>words.findIndex(w=>w.id===+el.closest(".item").dataset.id);
+function commit(el){const li=el.closest(".item"),i=idx(el),t=li.querySelector('[data-f="t"]').value.trim();
+ if(t){words[i].t=t;words[i].n=li.querySelector('[data-f="n"]').value.trim()}else words.splice(i,1);
+ editing=-1;save();render()}
+document.getElementById("addBtn").onclick=add;
+inp.onkeydown=inpN.onkeydown=e=>{if(e.key==="Enter")add()};
+list.onclick=e=>{const t=e.target;if(!t.closest(".item"))return;
+ if(t.matches("[data-edit]")){editing=words[idx(t)].id;render()}
+ else if(t.matches("[data-del]")){words.splice(idx(t),1);save();render()}
+ else if(t.matches("[data-save]"))commit(t);
+ else if(t.matches("[data-cancel]")){editing=-1;render()}};
+list.onkeydown=e=>{const t=e.target;
+ if(t.matches("[data-f]")){if(e.key==="Enter")commit(t);if(e.key==="Escape"){editing=-1;render()}}
+ else if(t.matches(".handle")&&(e.key==="ArrowUp"||e.key==="ArrowDown")){
+  e.preventDefault();const i=idx(t),j=i+(e.key==="ArrowUp"?-1:1);if(j<0||j>=words.length)return;
+  const id=words[i].id;[words[i],words[j]]=[words[j],words[i]];save();render();
+  list.querySelector(`[data-id="${id}"] .handle`).focus()}};
+// pointer-based drag and drop (mouse + touch)
+let dragEl=null;
+list.addEventListener("pointerdown",e=>{const h=e.target.closest(".handle");if(!h)return;
+ e.preventDefault();dragEl=h.closest(".item");dragEl.classList.add("dragging");document.body.classList.add("drag-active");h.setPointerCapture(e.pointerId)});
+list.addEventListener("pointermove",e=>{if(!dragEl)return;
+ const over=document.elementFromPoint(e.clientX,e.clientY);const el=over&&over.closest&&over.closest(".item");
+ if(!el||el===dragEl||!list.contains(el))return;
+ const after=dragEl.compareDocumentPosition(el)&Node.DOCUMENT_POSITION_FOLLOWING;
+ if(after)el.after(dragEl);else el.before(dragEl)});
+function endDrag(){if(!dragEl)return;dragEl.classList.remove("dragging");document.body.classList.remove("drag-active");
+ const order=[...list.children].map(li=>+li.dataset.id);
+ words.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));dragEl=null;save();render()}
+list.addEventListener("pointerup",endDrag);list.addEventListener("pointercancel",endDrag);
+document.getElementById("reset").onclick=()=>{if(confirm("คืนค่ารายการคำเป็นค่าเริ่มต้น? (โน้ตจะถูกลบ)")){words=fresh();editing=-1;save();render()}};
+render();
+</script>
+</body>
+</html>
